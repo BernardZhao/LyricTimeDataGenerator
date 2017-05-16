@@ -1,9 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -20,67 +17,29 @@ public class Main {
     public static void main(String[] args) {
 
         test = new SongTimer();
-        JFrame frame = new JFrame("Key Listener");
+        JFrame frame = new JFrame("Lyric Time Generator");
         Container contentPane = frame.getContentPane();
         JButton quit = new JButton("Quit");
         quit.addActionListener(new quit());
-        JTextField text = new JTextField();
-        JTextArea lyrics = new JTextArea("I wanna be the very best\n" +
-                "Like no one ever was\n" +
-                "To catch them is my real test\n" +
-                "To train them is my cause5\n" +
-                "\n" +
-                "I will travel across the land\n" +
-                "Searching far and wide\n" +
-                "Each Pokemon to understand\n" +
-                "The power that's inside4\n" +
-                "\n" +
-                "Pokemon, gotta catch 'em all\n" +
-                "Its you and me\n" +
-                "I know it's my destiny\n" +
-                "Pokemon, oh, you're my best friend\n" +
-                "In a world we must defend\n" +
-                "Pokemon, gotta catch 'em all\n" +
-                "A heart so true\n" +
-                "Our courage will pull us through2\n" +
-                "\n" +
-                "You teach me and I'll teach you\n" +
-                "Pokemon, gotta catch 'em all\n" +
-                "Gotta catch 'em all\n" +
-                "Yeah\n" +
-                "\n" +
-                "Every challenge along the way\n" +
-                "With courage I will face\n" +
-                "I will battle every day\n" +
-                "To claim my rightful place\n" +
-                "\n" +
-                "Come with me, the time is right\n" +
-                "There's no better team\n" +
-                "Arm in arm we'll win the fight\n" +
-                "It's always been our dream\n" +
-                "\n" +
-                "Pokemon, gotta catch 'em all\n" +
-                "Its you and me\n" +
-                "I know it's my destiny\n" +
-                "Pokemon, oh, you're my best friend\n" +
-                "In a world we must defend\n" +
-                "Pokemon, gotta catch 'em all\n" +
-                "A heart so true\n" +
-                "Our courage will pull us through\n" +
-                "\n" +
-                "You teach me and I'll teach you\n" +
-                "Pokemon, gotta catch 'em all\n" +
-                "Gotta catch 'em all\n" +
-                "Gotta catch 'em all\n" +
-                "Gotta catch 'em all\n" +
-                "Yeah");
+
+        JTextArea lyrics = new JTextArea(test.getSongLyrics());
 
 
-        text.addKeyListener(test);
-        contentPane.add(text, BorderLayout.SOUTH);
+        KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(test);
         contentPane.add(quit, BorderLayout.NORTH);
-        contentPane.add(lyrics, BorderLayout.WEST);
+        contentPane.add(lyrics, BorderLayout.CENTER);
+        lyrics.setEditable(false);
 
+
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        frame.addWindowListener(new WindowAdapter()
+        {
+            public void windowClosing(WindowEvent e)
+            {
+                new quit().quitprocess();
+            }
+        });
 
         frame.pack();
         frame.setLocationRelativeTo(null);
@@ -89,11 +48,17 @@ public class Main {
 
     static class quit implements ActionListener {
         public void actionPerformed(ActionEvent e){
+            quitprocess();
+        }
 
+        public void quitprocess() {
             try{
                 System.out.println(test.getTimes());
-                File output = new File("Output.csv");
+                String name = test.getSong()+"lyricdata";
+
+                File output = new File(name + ".csv");
                 PrintWriter writer = new PrintWriter(output);
+                writer.println(name);
                 for (long[] a : test.getTimes()) {
                     writer.println(a[0] + "," + a[1]);
                 }
@@ -107,5 +72,8 @@ public class Main {
         }
 
     }
+
+
 }
+
 
